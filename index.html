@@ -21,7 +21,7 @@
                     },
                     colors: {
                         sand: { DEFAULT: '#f5f0e8', dark: '#ede5d3' },
-                        sea: { DEFAULT: '#3b7ea1', light: '#6aaec8', dark: '#1e5270' },
+                        sea: { DEFAULT: '#3b7ea1', light: '#6aaec8', dark: '#1e5270', darker: '#102944' },
                         terracotta: { DEFAULT: '#c4694b', light: '#e8937a' },
                         stone: { DEFAULT: '#8a7f72', light: '#b5ad9f' },
                         ink: '#1a1612',
@@ -277,8 +277,11 @@
                 <h1 class="font-serif text-5xl md:text-7xl font-light text-white leading-none mb-3">
                     <span data-it="Benvenuti a" data-en="Welcome to"></span><br><em class="italic">Porto Ottiolu</em>
                 </h1>
-                <p class="text-white/80 text-base font-light mb-8">Residence "La Cittadella" · Via delle Mimose 19 ·
-                    <span data-it="Appartamento" data-en="Apartment"></span> 25</p>
+                <p class="text-white/80 text-lg font-light">Residence "La Cittadella"
+                </p>
+                <p class="text-white/80 text-sm font-light mb-8">Via delle Mimose 19 ·
+                    <span data-it="Appartamento" data-en="Apartment"></span> 25
+                </p>
                 <div class="flex gap-4 flex-wrap">
                     <a href="#checkin"
                         class="inline-flex items-center gap-2 px-6 py-3 bg-terracotta text-white rounded text-xs font-medium tracking-wider uppercase no-underline hover:bg-terracotta-light hover:-translate-y-0.5 transition-all">
@@ -292,20 +295,7 @@
             </div>
         </section>
 
-        <div
-            class="bg-sea-dark text-white px-8 py-5 flex items-center justify-center gap-10 flex-wrap text-sm animate-fade-up-delay">
-            <div class="flex items-center gap-2">
-                <span>📱</span>
-                <a href="tel:+393519454706"
-                    class="text-sea-light font-medium no-underline hover:text-white transition-colors">+39 351 945
-                    4706</a>
-                <span class="text-white/40 italic" data-it=" anche WhatsApp" data-en=" also on WhatsApp"></span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span>✉️</span>
-                <a href="mailto:graziella.caria@gmail.com"
-                    class="text-sea-light font-medium no-underline hover:text-white transition-colors">graziella.caria@gmail.com</a>
-            </div>
+        <div class="bg-sea-darker h-4">
         </div>
 
         <section id="documents" style="scroll-margin-top: 72px;" class="bg-white">
@@ -904,5 +894,4 @@
         }
     </script>
 </body>
-
 </html>
