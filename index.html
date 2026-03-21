@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Porto Ottiolu · Residence "La Cittadella" · Apt. 25</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['DM Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        sand: { DEFAULT: '#f5f0e8', dark: '#ede5d3' },
+                        sea: { DEFAULT: '#3b7ea1', light: '#6aaec8', dark: '#1e5270' },
+                        terracotta: { DEFAULT: '#c4694b', light: '#e8937a' },
+                        stone: { DEFAULT: '#8a7f72', light: '#b5ad9f' },
+                        ink: '#1a1612',
+                    },
+                    keyframes: {
+                        fadeUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        subtleZoom: { '0%': { transform: 'scale(1.04)' }, '100%': { transform: 'scale(1.0)' } },
+                        splashFadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        splashFadeOut: { '0%': { opacity: '1', transform: 'scale(1)' }, '100%': { opacity: '0', transform: 'scale(1.04)' } },
+                    },
+                    animation: {
+                        'fade-up': 'fadeUp 1s ease both',
+                        'fade-up-delay': 'fadeUp 1s ease 0.3s both',
+                        'subtle-zoom': 'subtleZoom 20s ease-in-out infinite alternate',
+                        'splash-in': 'splashFadeIn 0.8s ease both',
+                        'splash-out': 'splashFadeOut 0.6s ease forwards',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        #splash {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0d2333;
+            overflow: hidden;
+        }
+
+        #splash .splash-bg {
+            position: absolute;
+            inset: 0;
+            background: url('./images/hero.jpg') center center / cover no-repeat;
+            opacity: 0.28;
+            animation: subtleZoom 25s ease-in-out infinite alternate;
+        }
+
+        #splash .splash-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10, 30, 50, 0.82) 0%, rgba(36, 18, 10, 0.72) 100%);
+        }
+
+        #splash .splash-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            animation: splashFadeIn 1s ease 0.2s both;
+        }
+
+        #splash .lang-btn {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 2rem 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            text-decoration: none;
+        }
+
+        #splash .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.45);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        #splash .lang-btn .flag {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
+        #splash .lang-btn .lang-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        #splash .lang-btn .lang-sub {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #splash .divider {
+            width: 1px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.15);
+            margin: 0 1rem;
+        }
+
+        #splash.hiding {
+            animation: splashFadeOut 0.7s ease forwards;
+            pointer-events: none;
+        }
+
+        #main-page {
+            display: none;
+        }
+
+        #main-page.visible {
+            display: block;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-bg {
+            background: url('./images/hero.jpg') center center / cover no-repeat;
+        }
+
+        .wave-divider svg {
+            display: block;
+        }
+
+        @keyframes lineGrow {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .splash-line {
+            width: 48px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 1.2rem auto;
+            transform-origin: center;
+            animation: lineGrow 1s ease 0.8s both;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-sand text-ink text-base leading-relaxed">
+
+    <div id="splash">
+        <div class="splash-bg"></div>
+        <div class="splash-overlay"></div>
+        <div class="splash-content">
+            
+            <h1
+                style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,6vw,3.8rem);font-weight:300;color:#fff;line-height:1.05;margin-bottom:0;">
+                Benvenuti<em style="font-style:italic;"> / </em>Welcome
+            </h1>
+            <div class="splash-line"></div>
+            <p
+                style="font-family:'DM Sans',sans-serif;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:2.4rem;">
+                Scegli la tua lingua · Choose your language
+            </p>
+            <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;">
+                <button class="lang-btn" onclick="chooseLang('it')">
+                    <span class="flag">🇮🇹</span>
+                    <span class="lang-name">Italiano</span>
+                    <span class="lang-sub">Continua in italiano</span>
+                </button>
+                <div class="divider"></div>
+                <button class="lang-btn" onclick="chooseLang('en')">
+                    <span class="flag">🇬🇧</span>
+                    <span class="lang-name">English</span>
+                    <span class="lang-sub">Continue in English</span>
+                </button>
+            </div>
+            <p
+                style="margin-top:2.5rem; font-family:'DM Sans',sans-serif;font-size:0.62rem;letter-spacing:0.25em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:0.5rem;">
+                Porto Ottiolu · Residence "La Cittadella"
+            </p>
+            <p
+                style="margin-top:0.5rem; font-family:'DM Sans',sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.2);">
+                Via delle Mimose 19 · Appartamento 25
+            </p>
+        </div>
+    </div>
+
+    <div id="main-page">
+
+        <nav id="main-nav"
+            class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-sand/90 backdrop-blur-md border-b border-sand-dark transition-shadow duration-300">
+            <div class="font-serif text-base font-semibold text-sea-dark tracking-wide hidden sm:block">
+                Porto Ottiolu · <span class="text-terracotta">La Cittadella</span>
+            </div>
+            <div class="w-full sm:w-fit flex justify-between gap-8 md:gap-4">
+                <a href="#documents"
+                    class="flex items-center gap-1.5 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light hover:text-white group">
+                    <i class="ti ti-id text-lg"></i>
+                    <span class="hidden lg:inline text-xs font-medium tracking-widest uppercase" data-it="Documenti"
+                        data-en="Documents"></span>
+                </a>
+                <a href="#checkin"
+                    class="flex items-center gap-1.5 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light hover:text-white group">
+                    <i class="ti ti-door-enter text-lg"></i>
+                    <span class="hidden lg:inline text-xs font-medium tracking-widest uppercase" data-it="Check-in"
+                        data-en="Check-in"></span>
+                </a>
+                <a href="#apartment"
+                    class="flex items-center gap-1.5 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light hover:text-white group">
+                    <i class="ti ti-home text-lg"></i>
+                    <span class="hidden lg:inline text-xs font-medium tracking-widest uppercase" data-it="Appartamento"
+                        data-en="Apartment"></span>
+                </a>
+                <a href="#explore"
+                    class="flex items-center gap-1.5 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light hover:text-white group">
+                    <i class="ti ti-map-2 text-lg"></i>
+                    <span class="hidden lg:inline text-xs font-medium tracking-widest uppercase" data-it="Esplora"
+                        data-en="Explore"></span>
+                </a>
+                <a href="#checkout"
+                    class="flex items-center gap-1.5 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light hover:text-white group">
+                    <i class="ti ti-door-exit text-lg"></i>
+                    <span class="hidden lg:inline text-xs font-medium tracking-widest uppercase" data-it="Check-out"
+                        data-en="Check-out"></span>
+                </a>
+                <button onclick="toggleLang()" title="Switch language"
+                    class="flex items-center gap-1 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light">
+                    <span id="nav-lang-flag" class="text-base leading-none"></span>
+                    <span id="nav-lang-label"
+                        class="text-xs font-medium tracking-widest uppercase hidden lg:inline"></span>
+                </button>
+            </div>
+        </nav>
+
+        <section class="relative min-h-screen flex items-end overflow-hidden" style="scroll-margin-top: 72px;">
+            <div class="hero-bg absolute inset-0 animate-subtle-zoom"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-black/5 to-[rgba(10,30,50,0.65)]"></div>
+            <div class="relative z-10 px-12 pb-16 max-w-2xl animate-fade-up">
+                <h1 class="font-serif text-5xl md:text-7xl font-light text-white leading-none mb-3">
+                    <span data-it="Benvenuti a" data-en="Welcome to"></span><br><em class="italic">Porto Ottiolu</em>
+                </h1>
+                <p class="text-white/80 text-base font-light mb-8">Residence "La Cittadella" · Via delle Mimose 19 ·
+                    <span data-it="Appartamento" data-en="Apartment"></span> 25</p>
+                <div class="flex gap-4 flex-wrap">
+                    <a href="#checkin"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-terracotta text-white rounded text-xs font-medium tracking-wider uppercase no-underline hover:bg-terracotta-light hover:-translate-y-0.5 transition-all">
+                        ↓ <span data-it="Guida all'arrivo" data-en="Check-in guide"></span>
+                    </a>
+                    <a href="#explore"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-white/70 text-white rounded text-xs font-medium tracking-wider uppercase no-underline hover:bg-white/15 transition-all">
+                        <span data-it="Scopri la zona" data-en="Explore the area"></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <div
+            class="bg-sea-dark text-white px-8 py-5 flex items-center justify-center gap-10 flex-wrap text-sm animate-fade-up-delay">
+            <div class="flex items-center gap-2">
+                <span>📱</span>
+                <a href="tel:+393519454706"
+                    class="text-sea-light font-medium no-underline hover:text-white transition-colors">+39 351 945
+                    4706</a>
+                <span class="text-white/40 italic" data-it=" anche WhatsApp" data-en=" also on WhatsApp"></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span>✉️</span>
+                <a href="mailto:graziella.caria@gmail.com"
+                    class="text-sea-light font-medium no-underline hover:text-white transition-colors">graziella.caria@gmail.com</a>
+            </div>
+        </div>
+
+        <section id="documents" style="scroll-margin-top: 72px;" class="bg-white">
+            <div class="max-w-5xl mx-auto px-8 py-20">
+                <div class="text-[0.7rem] tracking-[0.2em] uppercase text-terracotta font-medium mb-2"
+                    data-it="Documenti" data-en="Documents"></div>
+                <h2 class="font-serif text-4xl md:text-5xl font-normal text-sea-dark mb-10 leading-tight"
+                    data-it="Prima del soggiorno" data-en="Before your stay"></h2>
+                <p class="text-stone text-sm leading-relaxed mb-3"
+                    data-it="Per adempiere agli obblighi di legge ed effettuare regolare denuncia in questura, è necessario inviare una foto del documento d'identità di ogni ospite nelle 24 ore precedenti al soggiorno."
+                    data-en="To comply with Italian law and complete the required police registration, please send a photo of each guest's ID document within 24 hours before your stay.">
+                </p>
+                <p class="text-stone text-sm leading-relaxed mb-2" data-it="Potete inviarle tramite:"
+                    data-en="You can send them via:"></p>
+                <p class="text-stone text-sm leading-relaxed mb-2">📱&nbsp;&nbsp;WhatsApp:&nbsp;&nbsp;<a
+                        href="tel:+393519454706" class="text-sea-light no-underline hover:underline">+39 351 945
+                        4706</a></p>
+                <p class="text-stone text-sm leading-relaxed flex items-center">✉️&nbsp;&nbsp;Email:&nbsp;&nbsp;<a
+                        href="mailto:graziella.caria@gmail.com"
+                        class="text-sea-light no-underline hover:underline">graziella.caria@gmail.com</a></p>
+            </div>
+        </section>
+
+        <section id="checkin" style="scroll-margin-top: 72px;">
+            <div class="max-w-5xl mx-auto px-8 py-20">
+                <div class="text-[0.7rem] tracking-[0.2em] uppercase text-terracotta font-medium mb-2" data-it="Check-in"
+                    data-en="Check-in"></div>
+                <h2 class="font-serif text-4xl md:text-5xl font-normal text-sea-dark mb-10 leading-tight"
+                    data-it="Come arrivare" data-en="How to get here"></h2>
+                <div class="mb-10">
+                    <div class="rounded-xl overflow-hidden shadow-lg" style="height: 420px;">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d800!2d9.7084341!3d40.7375433!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12de3cc5438ee877%3A0x5ebcbc889c881f6e5!2sVia%20delle%20Mimose%2C%2019%2C%2008020%20Porto%20Ottiolu%20OT%2C%20Italy!5e0!3m2!1sen!2sus!4v1700000000000"
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    <p class="text-xs text-stone mt-3">
+                        📍 Via delle Mimose 19 · Porto Ottiolu (OT) ·
+                        <a href="https://maps.google.com/?q=Via+delle+Mimose+19,+Porto+Ottiolu+OT,+Italy" target="_blank"
+                            class="text-sea-light hover:underline" data-it="Apri in Google Maps" data-en="Open in Google Maps">Apri
+                            in Google Maps</a>
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div
+                        class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250">
+                        <img src="images/1.png" class="w-full h-64 object-cover object-center block">
+                        <div class="p-6">
+                            <div
+                                class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                1</div>
+                            <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="Entrare a Porto Ottiolu"
+                                data-en="Entering Porto Ottiolu"></h3>
+                            <p class="text-sm text-stone leading-relaxed"
+                                data-it="Entrare dall'ingresso di via del Porto. Percorrere la via per 500 metri, poi prendere la quarta strada a sinistra. All'angolo si trova il Bar Ristorante "
+                                La Taverna dei Pirati"."
+                                data-en='Enter through the via del Porto entrance. Drive for 500 metres, then take the fourth street on the left. At the corner you will find the Bar Ristorante "La Taverna dei Pirati".'>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250"
+                        style="transition-delay:0.1s">
+                        <img src="images/2.png" class="w-full h-64 object-cover object-center block">
+                        <div class="p-6">
+                            <div
+                                class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                2</div>
+                            <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="Il cancello del residence"
+                                data-en="The residence gate"></h3>
+                            <p class="text-sm text-stone leading-relaxed"
+                                data-it="Il cancello si trova in fondo alla via, al numero 19. Parcheggiare temporaneamente davanti al cancello. Accedere tramite il cancello a sinistra, sempre aperto. L'appartamento è il n. 25, il secondo sulla destra."
+                                data-en="The gate is at the end of the road, at number 19. Park temporarily in front of the gate. Enter through the smaller gate on the left, which is always open. The apartment is number 25, the second on the right.">
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250"
+                        style="transition-delay:0.2s">
+                        <img src="images/3.png" class="w-full h-64 object-cover object-top block">
+                        <div class="p-6">
+                            <div
+                                class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                3</div>
+                            <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="Ritirare le chiavi"
+                                data-en="Collecting the keys"></h3>
+                            <p class="text-sm text-stone leading-relaxed mb-2"
+                                data-it="A sinistra della porta d'ingresso trovate la cassetta di sicurezza INTEY. Per aprirla:"
+                                data-en="To the left of the front door you will find the INTEY key safe. To open it:">
+                            </p>
+                            <ol class="list-decimal ml-5 text-sm text-stone leading-relaxed space-y-1 mb-2">
+                                <li data-it="Abbassare lo sportelletto nero" data-en="Lower the black cover"></li>
+                                <li data-it="Inserire il codice fornito dal proprietario"
+                                    data-en="Enter the code provided by the owner"></li>
+                                <li data-it="Portare verso il basso la levetta nera"
+                                    data-en="Pull the black lever downwards"></li>
+                            </ol>
+                            <p class="text-xs text-terracotta"
+                                data-it="⚠️ Non lasciare le chiavi nella cassetta quando siete fuori."
+                                data-en="⚠️ Do not leave the keys in the safe when you go out."></p>
+                        </div>
+                    </div>
+
+                    <div class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250"
+                        style="transition-delay:0.3s">
+                        <img src="images/4.png" class="w-full h-64 object-cover object-center block">
+                        <div class="p-6">
+                            <div
+                                class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                4</div>
+                            <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="Parcheggio riservato"
+                                data-en="Reserved parking"></h3>
+                            <p class="text-sm text-stone leading-relaxed"
+                                data-it='Il parcheggio riservato è difronte all\' appartamento, contrassegnato dal
+                                cartello "PARCHEGGIO PRIVATO CARIA" .'
+                                data-en='The reserved parking space is directly in front of the apartment, marked with the sign "PARCHEGGIO PRIVATO CARIA".'>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="apartment" class="bg-white" style="scroll-margin-top: 72px;">
+            <div class="max-w-5xl mx-auto px-8 py-20">
+                <div class="text-[0.7rem] tracking-[0.2em] uppercase text-terracotta font-medium mb-2"
+                    data-it="Appartamento" data-en="Apartment"></div>
+                <h2 class="font-serif text-4xl md:text-5xl font-normal text-sea-dark mb-10 leading-tight"
+                    data-it="Cosa c'è da sapere" data-en="What you need to know"></h2>
+
+                <div class="mb-4">
+                    <h3 class="font-serif text-2xl text-sea-dark mb-3" data-it="Gas e scaldabagno"
+                        data-en="Gas & water heater"></h3>
+                    <p class="text-stone text-sm leading-relaxed mb-3"
+                        data-it="Per sicurezza, il gas viene sempre chiuso e lo scaldabagno spento tra un soggiorno e l'altro."
+                        data-en="For safety reasons, the gas is always turned off and the water heater switched off between stays.">
+                    </p>
+                    <p class="text-stone text-sm leading-relaxed mb-3"
+                        data-it="🟡 Il rubinetto del gas è di colore giallo e si trova in cucina, sotto il lavandino."
+                        data-en="🟡 The gas tap is yellow and is located in the kitchen, under the sink."></p>
+                    <p class="text-stone text-sm leading-relaxed"
+                        data-it="🚿 Lo scaldabagno si attiva tramite l'interruttore che si trova nel bagno al piano terra, a sinistra, dietro la porta."
+                        data-en="🚿 The water heater is activated via the switch in the ground-floor bathroom, on the left, behind the door.">
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-serif text-2xl text-sea-dark mb-3 mt-10" data-it="Raccolta differenziata"
+                        data-en="Recycling & Waste Collection"></h3>
+                    <p class="text-stone text-sm leading-relaxed mb-3"
+                        data-it="A Porto Ottiolu la differenziazione è obbligatoria. In caso di dubbi, non esitate a contattarci."
+                        data-en="Waste sorting is mandatory in Porto Ottiolu. If you have any questions, please contact us.">
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                        <div
+                            class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250">
+                            <img src="images/5.png" class="w-full h-64 object-cover object-center block">
+                            <div class="p-6">
+                                <div
+                                    class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                    1</div>
+                                <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="The bins" data-en="I bidoni"></h3>
+                                <p class="text-sm text-stone leading-relaxed"
+                                    data-it="Nel giardino dell'appartamento troverete 4 bidoni colorati. Si prega di inserire i rifiuti nel bidone del colore appropriato come spiegato qui sotto."
+                                    data-en="In the garden of the apartment, you will find four colored bins. Please place your waste in the bin corresponding to the appropriate color, as explained below.">
+                                </p>
+                            </div>
+                        </div>
+                    
+                        <div class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250"
+                            style="transition-delay:0.1s">
+                            <img src="images/6.png" class="w-full h-64 object-cover object-center block">
+                            <div class="p-6">
+                                <div
+                                    class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                    2</div>
+                                <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="Il calendario" data-en="The calendar"></h3>
+                                <p class="text-sm text-stone leading-relaxed"
+                                    data-it="Vicino al lavandino della cucina, troverete il calendario con il dettaglio della raccolta. Ogni giorno riporta la tipologia di rifiuti che verranno ritirati."
+                                    data-en="Near the kitchen sink, you will find a calendar with the collection schedule. Each day indicates the type of waste that will be collected.">
+                                </p>
+                            </div>
+                        </div>
+                    
+                        <div class="fade-in bg-white rounded-lg overflow-hidden shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-250"
+                            style="transition-delay:0.2s">
+                            <img src="images/7.png" class="w-full h-64 object-cover object-top block">
+                            <div class="p-6">
+                                <div
+                                    class="inline-flex items-center justify-center w-8 h-8 bg-terracotta text-white rounded-full text-xs font-bold mb-3">
+                                    3</div>
+                                <h3 class="font-serif text-xl text-sea-dark mb-2" data-it="La raccolta" data-en="The collection"></h3>
+                                <p class="text-sm text-stone leading-relaxed mb-2"
+                                    data-it="I bidoni vanno posizionati a sinistra del cancello d'ingresso la sera prima del ritiro, e riportati dentro dopo il passaggio degli operatori."
+                                    data-en="The bins should be placed to the left of the entrance gate the evening before collection, and brought back inside after the waste has been collected.">
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                        <div class="rounded-lg p-5 border-l-4 bg-green-50 border-green-500">
+                            <h4 class="text-xs uppercase tracking-widest font-semibold text-green-800 mb-2"
+                                data-it="🟢 Verde — Indifferenziato" data-en="🟢 Green — General waste"></h4>
+                            <p class="text-xs text-stone leading-relaxed"
+                                data-it="Tutto ciò che non è riciclabile: cosmetici, usa e getta, polveri, CD, penne, carta oleata, cartoni unti, pannolini, lettiere."
+                                data-en="Everything that cannot be recycled: cosmetics, disposables, dust, CDs, pens, greaseproof paper, greasy cardboard, nappies, cat litter.">
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-5 border-l-4 bg-blue-50 border-blue-500">
+                            <h4 class="text-xs uppercase tracking-widest font-semibold text-blue-800 mb-2"
+                                data-it="🔵 Blu — Vetro &amp; Metalli" data-en="🔵 Blue — Glass &amp; Metals"></h4>
+                            <p class="text-xs text-stone leading-relaxed"
+                                data-it="Bottiglie di vetro, vino, birra. Contenitori in alluminio e banda stagnata: tonno, sardine, barattoli."
+                                data-en="Glass bottles (wine, beer). Aluminium and tin containers: tuna, sardines, tins and jars.">
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-5 border-l-4 bg-yellow-50 border-yellow-400">
+                            <h4 class="text-xs uppercase tracking-widest font-semibold text-yellow-700 mb-2"
+                                data-it="🟡 Giallo — Plastica" data-en="🟡 Yellow — Plastics"></h4>
+                            <p class="text-xs text-stone leading-relaxed"
+                                data-it="Bottiglie (schiacciate), flaconi, buste, sacchetti della spesa, bicchieri e posate di plastica."
+                                data-en="Bottles (flattened), containers, bags, shopping bags, plastic cups and cutlery.">
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-5 border-l-4 bg-amber-50 border-amber-700">
+                            <h4 class="text-xs uppercase tracking-widest font-semibold text-amber-900 mb-2"
+                                data-it="🟤 Marrone — Umido" data-en="🟤 Brown — Organic waste"></h4>
+                            <p class="text-xs text-stone leading-relaxed"
+                                data-it="Scarti di cucina, frutta, verdura, carne, pesce, pasta, fondi caffè, gusci di uova. Sacchetto biodegradabile obbligatorio."
+                                data-en="Kitchen scraps, fruit, vegetables, meat, fish, pasta, coffee grounds, eggshells. Biodegradable bag required.">
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-5 border-l-4 bg-orange-50 border-orange-500 col-span-full">
+                            <h4 class="text-xs uppercase tracking-widest font-semibold text-orange-700 mb-2"
+                                data-it="🟠 Carta — Nessun bidone" data-en="🟠 Paper — No bin"></h4>
+                            <p class="text-xs text-stone leading-relaxed"
+                                data-it="Giornali, riviste, libri, cartoni, tetrapak. Raccogliere in una busta di carta o in una scatola di cartone."
+                                data-en="Newspapers, magazines, books, cardboard, Tetrapak. Collect in a paper bag or cardboard box.">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="explore" class="bg-sand-dark" style="scroll-margin-top: 72px;">
+            <div class="max-w-5xl mx-auto px-8 py-20">
+                <div class="text-[0.7rem] tracking-[0.2em] uppercase text-terracotta font-medium mb-2"
+                    data-it="Natura" data-en="Nature"></div>
+                <h2 class="font-serif text-4xl md:text-5xl font-normal text-sea-dark mb-10 leading-tight"
+                    data-it="Spiagge nelle vicinanze" data-en="Nearby beaches"></h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">→
+                            180 m</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Cala Ottiolu</h4>
+                            <p class="text-xs text-stone" data-it="A due passi da te"
+                                data-en="A few steps from you"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            1.3 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Cala dei Francesi</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↓
+                            1.9 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Li Cucutti</h4>
+                            <p class="text-xs text-stone" data-it="Verso sud" data-en="To the south"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↓
+                            5.9 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Cala di Budoni</h4>
+                            <p class="text-xs text-stone" data-it="Verso sud" data-en="To the south"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            7.4 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Isuledda</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            8.2 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Cala d'Ambra</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↓
+                            9.4 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Porto Ainu</h4>
+                            <p class="text-xs text-stone" data-it="Verso sud" data-en="To the south"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            9.9 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">La Cinta</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            17.7 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Cala Brandinchi</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            18.2 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Puntaldia</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↑
+                            23 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Capo Coda Cavallo</h4>
+                            <p class="text-xs text-stone" data-it="Verso nord" data-en="To the north"></p>
+                        </div>
+                    </div>
+                    <div
+                        class="fade-in bg-white rounded-lg p-5 flex items-start gap-4 shadow-sm hover:-translate-y-0.5 transition-transform">
+                        <span
+                            class="text-[0.65rem] uppercase tracking-widest px-2 py-0.5 rounded font-semibold whitespace-nowrap mt-0.5 bg-blue-100 text-blue-800">↓
+                            42 km</span>
+                        <div>
+                            <h4 class="font-serif text-lg text-sea-dark mb-1">Berchida</h4>
+                            <p class="text-xs text-stone" data-it="Verso sud" data-en="To the south"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-white rounded-xl p-8 shadow-lg">
+                    <div class="text-[0.7rem] tracking-[0.2em] uppercase text-terracotta font-medium mb-2"
+                        data-it="Crociere" data-en="Boat trips"></div>
+                    <h3 class="font-serif text-3xl text-sea-dark mb-3" data-it="Golfo di Orosei"
+                        data-en="Gulf of Orosei"></h3>
+                    <video class="w-full h-auto mb-3 rounded-xl" autoplay muted playsinline loop
+                        src="videos/cala-mariolu.mp4"></video>
+                    <p class="text-stone mb-2 text-sm leading-relaxed"
+                        data-it="Crociera in motonave alla scoperta di spiagge raggiungibili solo via mare: Cala Luna, Cala Goloritzè, Cala Mariolu, Cala Sisine. Possibile visita alla Grotta del Bue Marino."
+                        data-en="A cruise to discover beaches accessible only by sea: Cala Luna, Cala Goloritzè, Cala Mariolu, Cala Sisine. A visit to the Grotta del Bue Marino cave is also possible.">
+                    </p>
+                    <p class="text-stone text-sm mb-4"
+                        data-it="Partenza dal porto turistico della Caletta · 22,5 km a sud"
+                        data-en="Departure from La Caletta marina · 22.5 km to the south"></p>
+                    <div class="flex gap-4 flex-wrap">
+                        <a href="http://www.davidegolia.it" target="_blank"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-terracotta text-white rounded text-xs font-medium tracking-wider uppercase no-underline hover:bg-terracotta-light hover:-translate-y-0.5 transition-all">Davide
+                            &amp; Golia →</a>
+                        <a href="https://www.calagononecrociere.it/motonave-imperatrice/" target="_blank"
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-sea text-white rounded text-xs font-medium tracking-wider uppercase no-underline hover:bg-sea-light hover:-translate-y-0.5 transition-all"
+                            data-it="Motonave Imperatrice →" data-en="Motonave Imperatrice →"></a>
+                    </div>
+                </div>
+
+                <!-- NIGHTLIFE -->
+                <div class="mt-16">
+                    <div class="text-[0.7rem] tracking-[0.2em] uppercase text-terracotta font-medium mb-2"
+                        data-it="Intrattenimento" data-en="Entertainment"></div>
+                    <h2 class="font-serif text-4xl md:text-5xl font-normal text-sea-dark mb-10 leading-tight"
+                        data-it="Vita notturna" data-en="Nightlife"></h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Lounge Bar" data-en="Lounge Bar"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Ambra on the Beach</h4>
+                            <p class="text-xs text-stone">8.2 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Cocktail Bar" data-en="Cocktail Bar"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Buddha del Mar</h4>
+                            <p class="text-xs text-stone">7.5 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Cocktail Bar" data-en="Cocktail Bar"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Bal Harbour</h4>
+                            <p class="text-xs text-stone">7.3 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Cocktail Bar" data-en="Cocktail Bar"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Bamboo</h4>
+                            <p class="text-xs text-stone">6.7 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Cocktail Bar" data-en="Cocktail Bar"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Ambra Day</h4>
+                            <p class="text-xs text-stone">8.3 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Night Club" data-en="Night Club"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Ambra Night</h4>
+                            <p class="text-xs text-stone">8.2 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Night Club" data-en="Night Club"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Luna Glam Club</h4>
+                            <p class="text-xs text-stone">7.4 km · San Teodoro</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Night Club" data-en="Night Club"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Pata Club</h4>
+                            <p class="text-xs text-stone">2.1 km · Agrustos</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Night Club" data-en="Night Club"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Phi Beach</h4>
+                            <p class="text-xs text-stone">65 km · Baja Sardinia</p>
+                        </div>
+                        <div class="fade-in bg-white rounded-lg p-5 border-t-4 border-sea shadow-sm">
+                            <div class="text-[0.68rem] uppercase tracking-widest text-terracotta font-semibold mb-1"
+                                data-it="Night Club" data-en="Night Club"></div>
+                            <h4 class="font-serif text-xl text-sea-dark mb-1">Ritual Club</h4>
+                            <p class="text-xs text-stone">65 km · Baja Sardinia</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="checkout" class="bg-sea-dark text-white" style="scroll-margin-top: 72px;">
+            <div class="max-w-5xl mx-auto px-8 py-20">
+                <div class="text-[0.7rem] tracking-[0.2em] uppercase text-sea-light font-medium mb-2" data-it="Partenza"
+                    data-en="Departure"></div>
+                <h2 class="font-serif text-4xl md:text-5xl font-normal text-white mb-10 leading-tight"
+                    data-it="Check-out e Pulizie" data-en="Check-out & Cleaning"></h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="fade-in bg-white/10 border border-white/15 rounded-lg p-6">
+                        <div class="text-3xl mb-4">🕙</div>
+                        <h4 class="font-serif text-xl text-white mb-2" data-it="Orario di check-out"
+                            data-en="Check-out time"></h4>
+                        <p class="text-sm text-white/65 leading-relaxed"
+                            data-it="Il check-out deve avvenire entro le ore 10:00 per permettere la preparazione per il prossimo ospite. Sarà nostra cura comunicarvi eventuale flessibilità."
+                            data-en="Check-out must take place by 10:00 am to allow preparation for the next guest. We will let you know in advance if there is any flexibility.">
+                        </p>
+                    </div>
+                    <div class="fade-in bg-white/10 border border-white/15 rounded-lg p-6">
+                        <div class="text-3xl mb-4">🔑</div>
+                        <h4 class="font-serif text-xl text-white mb-2" data-it="Restituzione chiavi"
+                            data-en="Returning the keys"></h4>
+                        <p class="text-sm text-white/65 leading-relaxed"
+                            data-it="Riporre le chiavi nella cassetta di sicurezza e chiudere il lucchetto inserendo una combinazione casuale."
+                            data-en="Place the keys back in the key safe and lock it by entering a random combination.">
+                        </p>
+                    </div>
+                    <div class="fade-in bg-white/10 border border-white/15 rounded-lg p-6">
+                        <div class="text-3xl mb-4">🍳</div>
+                        <h4 class="font-serif text-xl text-white mb-2" data-it="Pulizie incluse"
+                            data-en="Cleaning included"></h4>
+                        <p class="text-sm text-white/65 leading-relaxed"
+                            data-it="Finestre, pavimenti, sanitari, mobili, lenzuola e asciugamani. Vi chiediamo gentilmente di lasciare fornelli e stoviglie puliti."
+                            data-en="Windows, floors, bathrooms, furniture, bed linen and towels are all included. We kindly ask you to leave the hob and dishes clean.">
+                        </p>
+                    </div>
+                    <div class="fade-in bg-white/10 border border-white/15 rounded-lg p-6">
+                        <div class="text-3xl mb-4">🗑️</div>
+                        <h4 class="font-serif text-xl text-white mb-2" data-it="Rifiuti" data-en="Waste"></h4>
+                        <p class="text-sm text-white/65 leading-relaxed"
+                            data-it="Prima di partire, assicurarsi di aver smaltito tutti i rifiuti nei bidoni corretti e di averli riportati nel giardino dopo il ritiro."
+                            data-en="Before leaving, please make sure all waste has been disposed of in the correct bins and that the bins have been brought back into the garden after collection.">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-ink text-white/50 text-center px-8 py-8">
+            <p class="mb-2 text-base leading-none">Residence "La Cittadella" · <span data-it="Appartamento"
+                    data-en="Apartment"></span> 25</p>
+            <p class="text-sm leading-none">Via delle Mimose 19 · Porto Ottiolu (OT)</p>
+        </footer>
+
+    </div>
+
+    <script>
+        let currentLang = 'it';
+
+        function applyLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.querySelectorAll('[data-it][data-en]').forEach(el => {
+                const val = el.getAttribute('data-' + lang);
+                if (val !== null) el.textContent = val;
+            });
+            const flag = document.getElementById('nav-lang-flag');
+            const label = document.getElementById('nav-lang-label');
+            if (lang === 'it') {
+                flag.textContent = '🇬🇧';
+                label.textContent = 'EN';
+                flag.title = 'Switch to English';
+            } else {
+                flag.textContent = '🇮🇹';
+                label.textContent = 'IT';
+                flag.title = 'Passa all\'italiano';
+            }
+            document.querySelectorAll('a[href*="calagononecrociere"]').forEach(a => {
+                a.textContent = 'Motonave Imperatrice →';
+            });
+            sessionStorage.setItem('lang', lang);
+        }
+
+        function chooseLang(lang) {
+            const splash = document.getElementById('splash');
+            const mainPage = document.getElementById('main-page');
+            applyLang(lang);
+            splash.classList.add('hiding');
+            setTimeout(() => {
+                splash.style.display = 'none';
+                mainPage.classList.add('visible');
+                initObservers();
+            }, 700);
+        }
+
+        function toggleLang() {
+            applyLang(currentLang === 'it' ? 'en' : 'it');
+        }
+
+        const nav = document.getElementById('main-nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('shadow-md', window.scrollY > 50);
+        });
+
+        function initObservers() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        observer.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.12 });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        }
+
+        const saved = sessionStorage.getItem('lang');
+        if (saved) {
+            chooseLang(saved);
+        }
+    </script>
+</body>
+
+</html>
