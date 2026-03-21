@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="image" content="images/hero.jpg" data-gatsby-head="true">
     <title>Porto Ottiolu · Residence "La Cittadella" · Apt. 25</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +62,7 @@
         #splash .splash-bg {
             position: absolute;
             inset: 0;
-            background: url('images/hero.jpg') center center / cover no-repeat;
+            background: url('./images/hero.jpg') center center / cover no-repeat;
             opacity: 0.28;
             animation: subtleZoom 25s ease-in-out infinite alternate;
         }
@@ -128,7 +127,7 @@
             width: 1px;
             height: 80px;
             background: rgba(255, 255, 255, 0.15);
-            margin: 0 1rem;
+            margin: 0 2px;
         }
 
         #splash.hiding {
@@ -156,7 +155,7 @@
         }
 
         .hero-bg {
-            background: url('images/hero.jpg') center center / cover no-repeat;
+            background: url('./images/hero.jpg') center center / cover no-repeat;
         }
 
         .wave-divider svg {
@@ -186,7 +185,7 @@
 
 <body class="font-sans bg-sand text-ink text-base leading-relaxed">
 
-    <div id="splash">
+    <div id="splash" class="px-2">
         <div class="splash-bg"></div>
         <div class="splash-overlay"></div>
         <div class="splash-content">
@@ -227,11 +226,11 @@
     <div id="main-page">
 
         <nav id="main-nav"
-            class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-sand/90 backdrop-blur-md border-b border-sand-dark transition-shadow duration-300">
+            class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-sand/90 backdrop-blur-md border-b border-sand-dark transition-shadow duration-300">
             <div class="font-serif text-base font-semibold text-sea-dark tracking-wide hidden sm:block">
                 Porto Ottiolu · <span class="text-terracotta">La Cittadella</span>
             </div>
-            <div class="w-full sm:w-fit flex justify-between gap-8 md:gap-4">
+            <div class="w-full sm:w-fit flex justify-between gap-2 md:gap-8 md:gap-4">
                 <a href="#documents"
                     class="flex items-center gap-1.5 text-stone hover:text-sea-dark transition-colors px-2 py-1.5 rounded hover:bg-terracotta-light hover:text-white group">
                     <i class="ti ti-id text-lg"></i>
@@ -895,4 +894,5 @@
         }
     </script>
 </body>
+
 </html>
